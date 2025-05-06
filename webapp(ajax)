@@ -1,0 +1,38 @@
+index.html
+/<!DOCTYPE html>
+<html>
+<head>
+  <title>AJAX Web Application</title>
+</head>
+<body>
+  <h2>AJAX Example - Get User Info</h2>
+  <button onclick="loadUser()">Get User Info</button>
+  <div id="result"></div>
+
+  <script>
+    function loadUser() {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "user.json", true);
+      xhr.onload = function() {
+        if (this.status === 200) {
+          const user = JSON.parse(this.responseText);
+          document.getElementById("result").innerHTML =
+            `<p><strong>Name:</strong> ${user.name}</p>
+             <p><strong>Email:</strong> ${user.email}</p>`;
+        }
+      };
+      xhr.send();
+    }
+  </script>
+</body>
+</html>
+
+
+ user.json
+json
+Copy
+Edit
+{
+  "name": "CharudattaThorve",
+  "email": "charu@example.com"
+}
