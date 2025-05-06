@@ -1,0 +1,230 @@
+*********index.html*********
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Library Management System</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1>Library Management System</h1>
+  
+	<div class="container">
+    	<h2>Add a Book</h2>
+    	<input type="text" id="bookTitle" placeholder="Enter Book Title">
+    	<input type="text" id="authorName" placeholder="Enter Author Name">
+    	<button id="addBookBtn">Add Book</button>
+	</div>
+ 
+	<div class="container">
+    	<h2>Library Books</h2>
+    	<ul id="bookList"></ul>
+	</div>
+ 
+	<script src="app.js"></script>
+</body>
+</html>
+ 
+*********style.css*********
+body {
+	font-family: Arial, sans-serif;
+	text-align: center;
+	background-color: #f4f4f4;
+}
+ 
+.container {
+	background: white;
+	padding: 20px;
+	width: 50%;
+	margin: 20px auto;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+ 
+input {
+	width: 80%;
+	padding: 8px;
+	margin: 10px 0;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+ 
+button {
+	padding: 10px 15px;
+	background-color: #28a745;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+ 
+button:hover {
+	background-color: #218838;
+}
+ 
+ul {
+	list-style-type: none;
+	padding: 0;
+}
+ 
+li {
+	background: #fff;
+	padding: 10px;
+	margin: 5px;
+	border-radius: 5px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+ 
+*********app.ts*********
+// Base Class: Person
+class Person {
+	name: string;
+ 
+	constructor(name: string) {
+    	this.name = name;
+	}
+ 
+	getName(): string {
+    	return this.name;
+	}
+}
+ 
+// Intermediate Class: User (inherits from Person)
+class User extends Person {
+	userId: number;
+ 
+	constructor(name: string, userId: number) {
+    	super(name); // Call the constructor of Person
+    	this.userId = userId;
+	}
+ 
+	getUserId(): number {
+    	return this.userId;
+	}
+}
+ 
+// Final Class: Librarian (inherits from User)
+class Librarian extends User {
+	books: string[] = [];
+ 
+	constructor(name: string, userId: number) {
+    	super(name, userId); // Call the constructor of User
+	}
+ 
+	addBook(bookTitle: string, author: string) {
+    	this.books.push(`${bookTitle} by ${author}`);
+    	console.log(`Book added: ${bookTitle} by ${author}`);
+	}
+ 
+	getBooks(): string[] {
+    	return this.books;
+	}
+}
+ 
+// UI Interaction
+const librarian = new Librarian("Alice", 101);
+ 
+document.getElementById("addBookBtn")?.addEventListener("click", () => {
+	const bookTitle = (document.getElementById("bookTitle") as HTMLInputElement).value;
+	const authorName = (document.getElementById("authorName") as HTMLInputElement).value;
+ 
+	if (bookTitle && authorName) {
+    	librarian.addBook(bookTitle, authorName);
+    	displayBooks();
+    	(document.getElementById("bookTitle") as HTMLInputElement).value = "";
+    	(document.getElementById("authorName") as HTMLInputElement).value = "";
+	}
+});
+ 
+// Function to display books
+function displayBooks() {
+	const bookList = document.getElementById("bookList") as HTMLUListElement;
+	bookList.innerHTML = "";
+ 
+	librarian.getBooks().forEach(book => {
+    	const li = document.createElement("li");
+    	li.textContent = book;
+    	bookList.appendChild(li);
+	});
+}
+ 
+*********app.js*********
+var __extends = (this && this.__extends) || (function () {
+	var extendStatics = function (d, b) {
+    	extendStatics = Object.setPrototypeOf ||
+        	({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        	function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+    	return extendStatics(d, b);
+	};
+	return function (d, b) {
+    	if (typeof b !== "function" && b !== null)
+        	throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+    	extendStatics(d, b);
+    	function __() { this.constructor = d; }
+    	d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+})();
+var _a;
+// Base Class: Person
+var Person = /** @class */ (function () {
+	function Person(name) {
+    	this.name = name;
+	}
+	Person.prototype.getName = function () {
+    	return this.name;
+	};
+	return Person;
+}());
+// Intermediate Class: User (inherits from Person)
+var User = /** @class */ (function (_super) {
+	__extends(User, _super);
+	function User(name, userId) {
+    	var _this = _super.call(this, name) || this; // Call the constructor of Person
+    	_this.userId = userId;
+    	return _this;
+	}
+	User.prototype.getUserId = function () {
+    	return this.userId;
+	};
+	return User;
+}(Person));
+// Final Class: Librarian (inherits from User)
+var Librarian = /** @class */ (function (_super) {
+	__extends(Librarian, _super);
+	function Librarian(name, userId) {
+    	var _this = _super.call(this, name, userId) || this; // Call the constructor of User
+    	_this.books = [];
+    	return _this;
+	}
+	Librarian.prototype.addBook = function (bookTitle, author) {
+    	this.books.push("".concat(bookTitle, " by ").concat(author));
+    	console.log("Book added: ".concat(bookTitle, " by ").concat(author));
+	};
+	Librarian.prototype.getBooks = function () {
+    	return this.books;
+	};
+	return Librarian;
+}(User));
+// UI Interaction
+var librarian = new Librarian("Alice", 101);
+(_a = document.getElementById("addBookBtn")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", function () {
+	var bookTitle = document.getElementById("bookTitle").value;
+	var authorName = document.getElementById("authorName").value;
+	if (bookTitle && authorName) {
+    	librarian.addBook(bookTitle, authorName);
+    	displayBooks();
+    	document.getElementById("bookTitle").value = "";
+    	document.getElementById("authorName").value = "";
+	}
+});
+// Function to display books
+function displayBooks() {
+	var bookList = document.getElementById("bookList");
+	bookList.innerHTML = "";
+	librarian.getBooks().forEach(function (book) {
+    	var li = document.createElement("li");
+    	li.textContent = book;
+    	bookList.appendChild(li);
+	});
+}
