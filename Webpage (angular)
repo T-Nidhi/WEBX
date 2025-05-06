@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html ng-app="resultApp">
+<head>
+	<title>Result App</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+	<style>
+    	body {
+        	font-family: Arial, sans-serif;
+        	background-color: #f4f4f9;
+        	margin: 0;
+        	padding: 20px;
+        	display: flex;
+        	justify-content: center;
+        	align-items: center;
+    	}
+    	.result-container {
+        	background-color: #ffffff;
+        	width: 90%;
+        	max-width: 1000px;
+        	border-radius: 12px;
+        	box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        	padding: 30px;
+        	text-align: center;
+        	border: 3px solid #4CAF50;
+    	}
+    	table {
+        	width: 100%;
+        	border-collapse: collapse;
+        	margin-top: 20px;
+        	border-radius: 8px;
+        	overflow: hidden;
+        	box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    	}
+    	th, td {
+        	padding: 12px;
+        	text-align: center;
+        	border-bottom: 2px solid #e0e0e0;
+    	}
+    	th {
+        	background-color: #4CAF50;
+        	color: white;
+        	font-weight: bold;
+    	}
+    	tr:nth-child(even) {
+        	background-color: #f9f9f9;
+    	}
+    	input[type="number"] {
+        	width: 80%;
+        	padding: 8px;
+        	border: 1px solid #ccc;
+        	border-radius: 4px;
+        	text-align: center;
+        	outline: none;
+        	transition: border-color 0.3s;
+    	}
+    	input[type="number"]:focus {
+        	border-color: #4CAF50;
+    	}
+    	img {
+        	width: 120px;
+        	height: 120px;
+        	object-fit: cover;
+        	border: 2px solid #4CAF50;
+        	border-radius: 50%;
+        	margin-bottom: 10px;
+    	}
+    	h2 {
+        	color: #333;
+        	margin-bottom: 10px;
+    	}
+    	h3 {
+        	color: #4CAF50;
+        	margin-top: 10px;
+    	}
+	</style>
+</head>
+<body ng-controller="ResultController">
+	<div class="result-container">
+    	<h2>Grade-Card</h2>
+ 
+    	<input type="file" accept="image/*" onchange="angular.element(this).scope().uploadPhoto(event)" />
+    	<div ng-if="student.photo">
+        	<img ng-src="{{ student.photo }}" alt="Student Photo">
+    	</div>
+ 
+        <p><strong>Name:</strong> {{ student.name }} | <strong>Seat No:</strong> {{ student.seatNo }} | <strong>Semester:</strong> {{ student.semester }}</p>
+ 
+    	<table>
+        	<tr>
+            	<th>Sr. No</th>
+            	<th>Course Code</th>
+            	<th>Course Title</th>
+            	<th>Awarded Grade</th>
+            	<th>Grade Point (G)</th>
+            	<th>Course Credit (C)</th>
+            	<th>Credit Point (G x C)</th>
+        	</tr>
+        	<tr ng-repeat="subject in subjects">
+            	<td>{{ $index + 1 }}</td>
+            	<td>{{ subject.code }}</td>
+            	<td>{{ subject.title }}</td>
+            	<td>{{ subject.grade }}</td>
+            	<td><input type="number" ng-model="subject.gradePoint" min="0" max="10"></td>
+            	<td><input type="number" ng-model="subject.credit" min="0"></td>
+            	<td>{{ subject.gradePoint * subject.credit }}</td>
+        	</tr>
+    	</table>
+ 
+    	<h3>Total Credits: {{ calculateTotalCredits() }}</h3>
+    	<h3>SGPA: {{ calculateSGPA() | number:2 }}</h3>
+    	<h3>CGPA: {{ calculateCGPA() | number:2 }}</h3>
+	</div>
+ 
+	<script>
+    	angular.module('resultApp', []).controller('ResultController', function($scope) {
+        	$scope.student = {
+            	name: 'Neev Tushar Shah',
+            	seatNo: 'RWI5011',
+            	semester: 'V',
+            	photo: ''
+        	};
+ 
+        	$scope.subjects = [
+            	{ code: 'ITCR0501', title: 'Software Engineering', grade: 'C', gradePoint: 7, credit: 3 },
+            	{ code: 'ITCR0502', title: 'Cryptography and Network Security', grade: 'A', gradePoint: 9, credit: 3 },
+            	{ code: 'ITCR0503', title: 'Internet Programming', grade: 'O', gradePoint: 10, credit: 3 },
+            	{ code: 'ITCR0505', title: 'Entrepreneurship and E-Business', grade: 'O', gradePoint: 10, credit: 2 },
+            	{ code: 'ITLR0501', title: 'Software Engineering Lab', grade: 'O', gradePoint: 10, credit: 1 },
+            	{ code: 'ITLR0502', title: 'Cryptography and Network Security Lab', grade: 'O', gradePoint: 10, credit: 1 },
+            	{ code: 'ITLR0503', title: 'Internet Programming Lab', grade: 'O', gradePoint: 10, credit: 1 },
+            	{ code: 'ITLR0506', title: 'DevOps Lab', grade: 'O', gradePoint: 10, credit: 2 },
+            	{ code: 'ITLR0507', title: 'Professional Communication & Ethics-II', grade: 'O', gradePoint: 10, credit: 1 },
+            	{ code: 'ITLR0508', title: 'Mini Project 2A - Web Based Business Model', grade: 'O', gradePoint: 10, credit: 2 },
+            	{ code: 'ITDLOCR05043', title: 'Advanced Data Structure & Analysis', grade: 'O', gradePoint: 10, credit: 3 }
+        	];
+ 
+        	$scope.calculateTotalCredits = function() {
+            	return $scope.subjects.reduce((sum, subject) => sum + subject.credit, 0);
+        	};
+ 
+        	$scope.calculateSGPA = function() {
+            	let totalCreditPoints = 0;
+            	let totalCredits = 0;
+            	$scope.subjects.forEach(subject => {
+                	totalCreditPoints += subject.gradePoint * subject.credit;
+                	totalCredits += subject.credit;
+            	});
+            	return totalCredits ? totalCreditPoints / totalCredits : 0;
+        	};
+ 
+        	$scope.calculateCGPA = function() {
+            	let previousCGPA = 8.04;
+            	let previousSemesters = 2;
+            	let currentSGPA = $scope.calculateSGPA();
+            	let totalSemesters = previousSemesters + 1;
+            	return ((previousCGPA * previousSemesters) + currentSGPA) / totalSemesters;
+        	};
+ 
+        	$scope.uploadPhoto = function(event) {
+            	let reader = new FileReader();
+            	reader.onload = function(e) {
+                	$scope.$apply(function() {
+                    	$scope.student.photo = e.target.result;
+                	});
+            	};
+                reader.readAsDataURL(event.target.files[0]);
+        	};
+    	});
+	</script>
+</body>
+</html>
+
