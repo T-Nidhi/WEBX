@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AngularJS Services Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+  </head>
+  <body ng-app="myApp" ng-controller="MainController">
+   
+    <div class="timeout" style="background-color: beige">
+      <p>This header will change after two seconds:</p>
+      <h1>{{myHeader}}</h1>
+    </div>
+
+    <div class="interval" style="background-color: aliceblue">
+      <p>The time is:</p>
+      <h1>{{theTime}}</h1>
+    </div>
+
+    <div class="location" style="background-color: lavender">
+      <p>Current URL path is:</p>
+      <h2>{{currentPath}}</h2>
+    </div>
+
+    <div class="filter" style="background-color: honeydew;">
+        <p>Original Amount: {{amount}}</p>
+        <p>Formatted as Currency using $filter: {{formattedAmount}}</p>
+    </div>
+
+    <div class="log-output" style="background-color: lavender;">
+        <p>Check your browser console to see logged messages using <strong>$log</strong>.</p>
+    </div>
+
+    <div class="custom-service" style="background-color: lightcyan;">
+        <p>Custom Greeting:</p>
+        <h2>{{greetingMessage}}</h2>
+    </div>
+
+    <script>
+      var app = angular.module("myApp", []);
+
+      app.service("GreetingService", function() {
+      this.getGreeting = function() {
+        var hour = new Date().getHours();
+        if (hour < 12) {
+          return "Good Morning!";
+        } else if (hour < 18) {
+          return "Good Afternoon!";
+        } else {
+          return "Good Evening!";
+        }
+      };
+    });
+
+      app.controller("MainController", function ($scope, $timeout, $interval, $location, $filter, $log,GreetingService) {
+        $scope.myHeader = "Web";
+        $timeout(function () {
+          $scope.myHeader = "Web X.0";
+        }, 2000);
+
+        $scope.theTime = new Date().toLocaleTimeString();
+        $interval(function () {
+          $scope.theTime = new Date().toLocaleTimeString();
+        }, 1000);
+
+        $scope.currentPath = $location.absUrl();
+
+        $scope.amount = 1234.56;
+        $scope.formattedAmount = $filter('currency')($scope.amount, '₹');
+
+        $log.info("MainController initialized");
+        $log.debug("This is a debug message");
+        $log.warn("This is a warning message");
+        $log.error("This is an error message");
+
+        $scope.greetingMessage = GreetingService.getGreeting();
+      });
+    </script>
+  </body>
+</html>
